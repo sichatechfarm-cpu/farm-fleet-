@@ -5,7 +5,7 @@ const CONFIG = {
     spreadsheetId: '1oac0NIhnf_cybkkNs1dQOOldPGmDWBvGWmFAgwpx6cw',
 
     // API Key
-    apiKey: 'AIzaSyCutuniWpAu5NC3uPXWgnodAhx0on26Mx8',
+    apiKey: 'AIzaSyBKVC9ynvKVJ_09Ca2OLR3CAhaRR5FRxoc',
 
     // Advanced Options
     refreshInterval: 5000,
