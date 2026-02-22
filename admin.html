@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farm Fleet - Admin Setup</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --rust: #D85D3E;
+            --wheat: #F4E4C1;
+            --earth: #4A4238;
+            --sage: #8B9D83;
+            --cream: #FFF9F0;
+            --shadow: rgba(74, 66, 56, 0.15);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, var(--wheat) 0%, var(--cream) 100%);
+            color: var(--earth);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--rust);
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--sage);
+            font-weight: 400;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px var(--shadow);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--earth);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon {
+            width: 24px;
+            height: 24px;
+            display: inline-block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--earth);
+            font-size: 0.95rem;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #E8E3D8;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--rust);
+            box-shadow: 0 0 0 3px rgba(216, 93, 62, 0.1);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--rust);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #c24d2e;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(216, 93, 62, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--sage);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #798c72;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #d64545;
+            color: white;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+        .btn-danger:hover {
+            background: #c23535;
+        }
+
+        .car-list {
+            display: grid;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .car-item {
+            background: var(--cream);
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .car-item:hover {
+            border-color: var(--rust);
+            transform: translateX(5px);
+        }
+
+        .car-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .car-icon {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .car-details h3 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            color: var(--earth);
+        }
+
+        .car-id {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--sage);
+        }
+
+        .car-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .qr-code {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            margin-top: 15px;
+        }
+
+        .qr-code canvas {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--sage);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 640px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .car-item {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .car-actions {
+                width: 100%;
+            }
+
+            .btn-danger {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚜 Farm Fleet Admin</h1>
+            <p class="subtitle">Setup and manage your vehicles</p>
+        </header>
+
+        <div class="card">
+            <h2>
+                <span class="icon">➕</span>
+                Add New Vehicle
+            </h2>
+            <div class="form-group">
+                <label for="carName">Vehicle Name</label>
+                <input type="text" id="carName" placeholder="e.g., Red Truck, Blue Tractor, Van" />
+            </div>
+            <button class="btn btn-primary" onclick="addCar()">
+                Add Vehicle
+            </button>
+        </div>
+
+        <div class="card">
+            <h2>
+                <span class="icon">🚗</span>
+                Current Fleet
+            </h2>
+            <div class="car-list" id="carList"></div>
+        </div>
+
+        <div class="nav-links">
+            <a href="driver.html" style="text-decoration: none;">
+                <button class="btn btn-secondary">📱 Driver App</button>
+            </a>
+            <a href="dashboard.html" style="text-decoration: none;">
+                <button class="btn btn-secondary">📊 Status Dashboard</button>
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        // Initialize localStorage if needed
+        if (!localStorage.getItem('farmFleetCars')) {
+            localStorage.setItem('farmFleetCars', JSON.stringify([]));
+        }
+        if (!localStorage.getItem('farmFleetStatus')) {
+            localStorage.setItem('farmFleetStatus', JSON.stringify({}));
+        }
+
+        function getCars() {
+            return JSON.parse(localStorage.getItem('farmFleetCars') || '[]');
+        }
+
+        function saveCars(cars) {
+            localStorage.setItem('farmFleetCars', JSON.stringify(cars));
+        }
+
+        function generateId() {
+            return 'car_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        function addCar() {
+            const nameInput = document.getElementById('carName');
+            const name = nameInput.value.trim();
+            
+            if (!name) {
+                alert('Please enter a vehicle name');
+                return;
+            }
+
+            const cars = getCars();
+            const newCar = {
+                id: generateId(),
+                name: name,
+                addedAt: new Date().toISOString()
+            };
+
+            cars.push(newCar);
+            saveCars(cars);
+            nameInput.value = '';
+            renderCars();
+        }
+
+        function deleteCar(carId) {
+            if (!confirm('Are you sure you want to delete this vehicle?')) {
+                return;
+            }
+
+            const cars = getCars();
+            const filtered = cars.filter(car => car.id !== carId);
+            saveCars(filtered);
+
+            // Also clean up status
+            const status = JSON.parse(localStorage.getItem('farmFleetStatus') || '{}');
+            delete status[carId];
+            localStorage.setItem('farmFleetStatus', JSON.stringify(status));
+
+            renderCars();
+        }
+
+        function showQR(carId, carName) {
+            const cars = getCars();
+            const car = cars.find(c => c.id === carId);
+            if (!car) return;
+
+            const existingQR = document.getElementById('qr-' + carId);
+            if (existingQR) {
+                existingQR.remove();
+                return;
+            }
+
+            const carItem = document.querySelector(`[data-car-id="${carId}"]`);
+            const qrContainer = document.createElement('div');
+            qrContainer.id = 'qr-' + carId;
+            qrContainer.className = 'qr-code';
+            qrContainer.innerHTML = `
+                <h3 style="margin-bottom: 15px; color: var(--earth);">${carName}</h3>
+                <div id="qrcode-${carId}"></div>
+                <p style="margin-top: 15px; color: var(--sage); font-size: 0.9rem;">
+                    Print this QR code and place it near the key panel
+                </p>
+            `;
+            
+            carItem.parentElement.insertBefore(qrContainer, carItem.nextSibling);
+
+            // Generate QR code with car URL
+            const url = window.location.origin + window.location.pathname.replace('admin.html', '') + 'driver.html?car=' + carId;
+            new QRCode(document.getElementById('qrcode-' + carId), {
+                text: url,
+                width: 200,
+                height: 200,
+                colorDark: "#4A4238",
+                colorLight: "#ffffff",
+            });
+        }
+
+        function renderCars() {
+            const cars = getCars();
+            const carList = document.getElementById('carList');
+
+            if (cars.length === 0) {
+                carList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🚗</div>
+                        <p>No vehicles added yet. Add your first vehicle above!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            carList.innerHTML = cars.map(car => `
+                <div>
+                    <div class="car-item" data-car-id="${car.id}">
+                        <div class="car-info">
+                            <div class="car-icon">🚙</div>
+                            <div class="car-details">
+                                <h3>${car.name}</h3>
+                                <div class="car-id">ID: ${car.id}</div>
+                            </div>
+                        </div>
+                        <div class="car-actions">
+                            <button class="btn btn-secondary" onclick="showQR('${car.id}', '${car.name}')">
+                                📱 QR Code
+                            </button>
+                            <button class="btn btn-danger" onclick="deleteCar('${car.id}')">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Handle Enter key in input
+        document.getElementById('carName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addCar();
+            }
+        });
+
+        // Initial render
+        renderCars();
+    </script>
+</body>
+</html>
