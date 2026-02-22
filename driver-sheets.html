@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farm Fleet - Driver App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --rust: #D85D3E;
+            --wheat: #F4E4C1;
+            --earth: #4A4238;
+            --sage: #8B9D83;
+            --cream: #FFF9F0;
+            --success: #5C8B5A;
+            --shadow: rgba(74, 66, 56, 0.15);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, var(--wheat) 0%, var(--cream) 100%);
+            color: var(--earth);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--rust);
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: var(--sage);
+            font-weight: 400;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 20px var(--shadow);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .vehicle-display {
+            text-align: center;
+            padding: 30px 20px;
+            background: var(--cream);
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .vehicle-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        .vehicle-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--earth);
+            margin-bottom: 10px;
+        }
+
+        .vehicle-status {
+            font-size: 1rem;
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: 600;
+        }
+
+        .status-available {
+            background: #e8f5e7;
+            color: var(--success);
+        }
+
+        .status-in-use {
+            background: #ffe8e0;
+            color: var(--rust);
+        }
+
+        .info-box {
+            background: var(--cream);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+        }
+
+        .info-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-label {
+            color: var(--sage);
+            font-weight: 600;
+        }
+
+        .info-value {
+            color: var(--earth);
+            font-weight: 600;
+        }
+
+        .driver-input {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--earth);
+            font-size: 0.95rem;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #E8E3D8;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--rust);
+            box-shadow: 0 0 0 3px rgba(216, 93, 62, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-checkout {
+            background: var(--rust);
+            color: white;
+        }
+
+        .btn-checkout:hover:not(:disabled) {
+            background: #c24d2e;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(216, 93, 62, 0.3);
+        }
+
+        .btn-checkin {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-checkin:hover:not(:disabled) {
+            background: #4d7a4b;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(92, 139, 90, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .error-message {
+            background: #ffe8e0;
+            color: #c23535;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .success-message {
+            background: #e8f5e7;
+            color: var(--success);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        .select-vehicle {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .select-vehicle h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--earth);
+        }
+
+        .vehicle-grid {
+            display: grid;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .vehicle-option {
+            background: var(--cream);
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .vehicle-option:hover {
+            border-color: var(--rust);
+            transform: translateX(5px);
+        }
+
+        .vehicle-option-icon {
+            font-size: 2rem;
+        }
+
+        .vehicle-option-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--earth);
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-link a {
+            color: var(--sage);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link a:hover {
+            color: var(--rust);
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 640px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .vehicle-icon {
+                font-size: 3rem;
+            }
+
+            .vehicle-name {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚜 Farm Fleet</h1>
+            <p class="subtitle">Driver Check-Out/In</p>
+        </header>
+
+        <div class="card" id="mainContent">
+            <div style="text-align: center; padding: 40px 20px; color: var(--sage);">
+                <div class="loading" style="border-color: var(--sage); border-top-color: var(--rust); width: 40px; height: 40px; margin: 0 auto 20px;"></div>
+                <p>Loading...</p>
+            </div>
+        </div>
+
+        <div class="back-link">
+            <a href="dashboard.html">📊 View Dashboard</a> | 
+            <a href="admin.html">⚙️ Admin</a>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script>
+        let selectedCarId = null;
+        let selectedCar = null;
+        let gapiLoaded = false;
+
+        function initGoogleSheets() {
+            gapi.load('client', async () => {
+                try {
+                    await gapi.client.init({
+                        apiKey: window.FARM_FLEET_CONFIG.apiKey,
+                        discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
+                    });
+                    
+                    gapiLoaded = true;
+                    await initialize();
+                } catch (error) {
+                    console.error('Failed to initialize:', error);
+                    showError('Failed to connect to Google Sheets. Check config.js');
+                }
+            });
+        }
+
+        async function initialize() {
+            const carIdFromUrl = getUrlParameter('car');
+            
+            if (carIdFromUrl) {
+                await selectVehicle(carIdFromUrl);
+            } else {
+                await showVehicleSelection();
+            }
+        }
+
+        async function getCars() {
+            try {
+                const response = await gapi.client.sheets.spreadsheets.values.get({
+                    spreadsheetId: window.FARM_FLEET_CONFIG.spreadsheetId,
+                    range: 'Cars!A2:C',
+                });
+                
+                const rows = response.result.values || [];
+                return rows.map(row => ({
+                    id: row[0],
+                    name: row[1],
+                    addedAt: row[2]
+                }));
+            } catch (error) {
+                console.error('Error getting cars:', error);
+                return [];
+            }
+        }
+
+        async function getStatus() {
+            try {
+                const response = await gapi.client.sheets.spreadsheets.values.get({
+                    spreadsheetId: window.FARM_FLEET_CONFIG.spreadsheetId,
+                    range: 'Status!A2:F',
+                });
+                
+                const rows = response.result.values || [];
+                const status = {};
+                
+                rows.forEach(row => {
+                    status[row[0]] = {
+                        inUse: row[1] === 'TRUE',
+                        driverName: row[2] || '',
+                        checkOutTime: row[3] || '',
+                        lastDriver: row[4] || '',
+                        lastCheckIn: row[5] || ''
+                    };
+                });
+                
+                return status;
+            } catch (error) {
+                console.error('Error getting status:', error);
+                return {};
+            }
+        }
+
+        async function updateStatus(carId, statusData) {
+            try {
+                const status = await getStatus();
+                const cars = await getCars();
+                const carIndex = cars.findIndex(c => c.id === carId);
+                
+                if (carIndex === -1) return;
+
+                const rowData = [
+                    carId,
+                    statusData.inUse ? 'TRUE' : 'FALSE',
+                    statusData.driverName || '',
+                    statusData.checkOutTime || '',
+                    statusData.lastDriver || '',
+                    statusData.lastCheckIn || ''
+                ];
+
+                // Check if car already has status
+                const allStatus = await gapi.client.sheets.spreadsheets.values.get({
+                    spreadsheetId: window.FARM_FLEET_CONFIG.spreadsheetId,
+                    range: 'Status!A2:A',
+                });
+                
+                const existingIds = (allStatus.result.values || []).map(row => row[0]);
+                const existingIndex = existingIds.indexOf(carId);
+
+                if (existingIndex !== -1) {
+                    // Update existing row
+                    await gapi.client.sheets.spreadsheets.values.update({
+                        spreadsheetId: window.FARM_FLEET_CONFIG.spreadsheetId,
+                        range: `Status!A${existingIndex + 2}:F${existingIndex + 2}`,
+                        valueInputOption: 'RAW',
+                        resource: {
+                            values: [rowData]
+                        }
+                    });
+                } else {
+                    // Append new row
+                    await gapi.client.sheets.spreadsheets.values.append({
+                        spreadsheetId: window.FARM_FLEET_CONFIG.spreadsheetId,
+                        range: 'Status!A:F',
+                        valueInputOption: 'RAW',
+                        resource: {
+                            values: [rowData]
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error updating status:', error);
+                throw error;
+            }
+        }
+
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        function formatDateTime(isoString) {
+            const date = new Date(isoString);
+            return date.toLocaleString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            });
+        }
+
+        async function showVehicleSelection() {
+            const cars = await getCars();
+            const status = await getStatus();
+
+            if (cars.length === 0) {
+                document.getElementById('mainContent').innerHTML = `
+                    <div class="select-vehicle">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">🚗</div>
+                        <h2>No vehicles available</h2>
+                        <p style="color: var(--sage); margin-top: 10px;">
+                            Please set up vehicles in the admin panel first.
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+
+            const vehicleOptions = cars.map(car => {
+                const carStatus = status[car.id];
+                const isAvailable = !carStatus || !carStatus.inUse;
+                
+                return `
+                    <div class="vehicle-option" onclick="selectVehicle('${car.id}')">
+                        <div class="vehicle-option-icon">🚙</div>
+                        <div>
+                            <div class="vehicle-option-name">${car.name}</div>
+                            <div style="font-size: 0.85rem; color: ${isAvailable ? 'var(--success)' : 'var(--rust)'}; margin-top: 4px;">
+                                ${isAvailable ? '✓ Available' : '⚠ In Use'}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('mainContent').innerHTML = `
+                <div class="select-vehicle">
+                    <h2>Select a Vehicle</h2>
+                    <div class="vehicle-grid">
+                        ${vehicleOptions}
+                    </div>
+                </div>
+            `;
+        }
+
+        async function selectVehicle(carId) {
+            selectedCarId = carId;
+            const cars = await getCars();
+            selectedCar = cars.find(c => c.id === carId);
+            
+            if (!selectedCar) {
+                showError('Vehicle not found');
+                return;
+            }
+
+            await showVehicleInterface();
+        }
+
+        async function showVehicleInterface() {
+            const status = await getStatus();
+            const carStatus = status[selectedCarId];
+            const isInUse = carStatus && carStatus.inUse;
+
+            let content = `
+                <div class="vehicle-display">
+                    <div class="vehicle-icon">🚙</div>
+                    <div class="vehicle-name">${selectedCar.name}</div>
+                    <div class="vehicle-status ${isInUse ? 'status-in-use' : 'status-available'}">
+                        ${isInUse ? '🔴 In Use' : '🟢 Available'}
+                    </div>
+                </div>
+            `;
+
+            if (isInUse) {
+                content += `
+                    <div class="info-box">
+                        <div class="info-row">
+                            <span class="info-label">Driver:</span>
+                            <span class="info-value">${carStatus.driverName}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Checked Out:</span>
+                            <span class="info-value">${formatDateTime(carStatus.checkOutTime)}</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-checkin" onclick="checkIn()" id="actionBtn">
+                        🏁 Check In Vehicle
+                    </button>
+                `;
+            } else {
+                content += `
+                    <div class="driver-input">
+                        <label for="driverName">Your Name</label>
+                        <input type="text" id="driverName" placeholder="Enter your name" autocomplete="name" />
+                    </div>
+                    <button class="btn btn-checkout" onclick="checkOut()" id="actionBtn">
+                        🚀 Check Out Vehicle
+                    </button>
+                `;
+            }
+
+            content += `
+                <div style="text-align: center; margin-top: 20px;">
+                    <a href="#" onclick="showVehicleSelection(); return false;" style="color: var(--sage); text-decoration: none; font-weight: 600;">
+                        ← Back to vehicle selection
+                    </a>
+                </div>
+            `;
+
+            document.getElementById('mainContent').innerHTML = content;
+
+            if (!isInUse) {
+                setTimeout(() => {
+                    const input = document.getElementById('driverName');
+                    input.focus();
+                    input.addEventListener('keypress', function(e) {
+                        if (e.key === 'Enter') {
+                            checkOut();
+                        }
+                    });
+                }, 100);
+            }
+        }
+
+        async function checkOut() {
+            const driverNameInput = document.getElementById('driverName');
+            const driverName = driverNameInput.value.trim();
+            const actionBtn = document.getElementById('actionBtn');
+
+            if (!driverName) {
+                showError('Please enter your name');
+                return;
+            }
+
+            actionBtn.disabled = true;
+            actionBtn.innerHTML = '<span class="loading"></span> Checking out...';
+
+            try {
+                await updateStatus(selectedCarId, {
+                    inUse: true,
+                    driverName: driverName,
+                    checkOutTime: new Date().toISOString()
+                });
+
+                showSuccess(`${selectedCar.name} checked out successfully!`);
+                setTimeout(async () => {
+                    await showVehicleInterface();
+                }, 1500);
+            } catch (error) {
+                showError('Failed to check out vehicle');
+                actionBtn.disabled = false;
+                actionBtn.innerHTML = '🚀 Check Out Vehicle';
+            }
+        }
+
+        async function checkIn() {
+            const actionBtn = document.getElementById('actionBtn');
+            actionBtn.disabled = true;
+            actionBtn.innerHTML = '<span class="loading"></span> Checking in...';
+
+            try {
+                const status = await getStatus();
+                const currentStatus = status[selectedCarId];
+
+                await updateStatus(selectedCarId, {
+                    inUse: false,
+                    lastDriver: currentStatus.driverName,
+                    lastCheckIn: new Date().toISOString()
+                });
+
+                showSuccess(`${selectedCar.name} checked in successfully!`);
+                setTimeout(async () => {
+                    await showVehicleInterface();
+                }, 1500);
+            } catch (error) {
+                showError('Failed to check in vehicle');
+                actionBtn.disabled = false;
+                actionBtn.innerHTML = '🏁 Check In Vehicle';
+            }
+        }
+
+        function showError(message) {
+            const mainContent = document.getElementById('mainContent');
+            mainContent.innerHTML = `
+                <div class="error-message">
+                    ${message}
+                </div>
+                <div style="text-align: center;">
+                    <button class="btn btn-secondary" onclick="location.reload()">
+                        Try Again
+                    </button>
+                </div>
+            `;
+        }
+
+        function showSuccess(message) {
+            const mainContent = document.getElementById('mainContent');
+            mainContent.innerHTML = `
+                <div class="success-message" style="padding: 60px 20px; font-size: 1.2rem;">
+                    <div style="font-size: 3rem; margin-bottom: 20px;">✅</div>
+                    ${message}
+                </div>
+            `;
+        }
+
+        // Initialize
+        if (!window.FARM_FLEET_CONFIG || !window.FARM_FLEET_CONFIG.spreadsheetId) {
+            showError('Configuration missing. Please setup config.js');
+        } else {
+            initGoogleSheets();
+        }
+    </script>
+</body>
+</html>
